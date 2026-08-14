@@ -1,0 +1,12 @@
+.vs/
+x64/
+Win32/
+Debug/
+Release/
+*.user
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.log
+Thumbs.db
