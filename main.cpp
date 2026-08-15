@@ -1,11 +1,20 @@
-
+//normal classes
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <cmath>
-#include "Shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+//math classes
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+//other classes
+#include "Shader.h"
+
+using namespace glm;
 
 float verticies[] = {
 	// positions // colors // texture coords
@@ -154,7 +163,8 @@ int main() {
 	
 	stbi_image_free(data);
 	
-	
+
+
 
 
 	//calls this when GLFW detects the size of the window changes
@@ -172,7 +182,12 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		mat4 trans = mat4(1.0f);
+		trans = translate(trans, vec3(0.5, -0.5, 0.0f));
+		trans = rotate(trans, (float)glfwGetTime(), vec3(0.0, 0.0, 1));
+
 		shader1.use();
+		shader1.setMat4("transform", trans);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
