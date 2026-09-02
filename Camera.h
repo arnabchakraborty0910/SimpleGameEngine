@@ -1,0 +1,110 @@
+#pragma once
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+enum Camera_Movement {
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT
+};
+
+
+const float YAW = -90.0f;
+const float PITCH = 0.0f;
+const float SPEED = 2.5f;
+const float SENSITIVITY = 0.1f;
+const float ZOOM = 45.0f;
+
+using namespace glm;
+class Camera
+{
+public:
+	vec3 pos;
+	vec3 front;
+	vec3 up;
+	vec3 right;
+	vec3 worldUp;
+
+	float yaw;
+	float pitch;
+	float moveSpeed;
+	float mouseSens;
+	float zoom;
+	Camera(vec3 position = vec3(0.0f), vec3 up = vec3(0.0f,1.0f,0.0f), float camYaw = YAW, float camPitch = PITCH ) : front(vec3(0.0f, 0.0f, -1)), moveSpeed(SPEED), mouseSens(SENSITIVITY), zoom(ZOOM)
+	{
+		pos = position;
+		worldUp = up;
+		yaw = camYaw;
+		pitch = camPitch;
+		updateCameraVectors();
+	}
+
+	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float camYaw, float camPitch) : front(vec3(0, 0, -1)), moveSpeed(SPEED), mouseSens(SENSITIVITY), zoom(ZOOM) 
+	{
+		pos = vec3(posX, posY, posZ);
+		worldUp = vec3(upX, upY, upZ);
+		yaw = camYaw;
+		pitch = camPitch;
+		updateCameraVectors();
+	}
+
+	mat4 GetViewMatrix() {
+		return lookAt(pos, pos + front, up);
+	}
+
+	void ProcessKeyBoard(Camera_Movement direction, float deltaTime) {
+		float velocity = moveSpeed * deltaTime;
+		if (direction == FORWARD)
+			pos += front * velocity;
+		if (direction == BACKWARD)
+			pos -= front * velocity;
+		if (direction == LEFT)
+			pos -= right * velocity;
+		if (direction == RIGHT)
+			pos += right * velocity;
+	}
+
+	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch) {
+		xoffset *= mouseSens;
+		yoffset *= mouseSens;
+
+		yaw += xoffset;
+		pitch += yoffset;
+
+		if (constrainPitch) 
+		{
+			if (pitch > 89.0f)
+				pitch = 89.0f;
+			if (pitch < -89.0f)
+				pitch = -89.0f;
+		}
+		updateCameraVectors();
+
+	}
+
+	void ProcessMouseScroll(float yoffset) {
+		zoom -= yoffset;
+		if (zoom < 1.0f)
+			zoom = 1.0f;
+		if (zoom > 45.0f)
+			zoom = 45.0f;
+	}
+
+
+private:
+	void updateCameraVectors() {
+		vec3 frontCam;
+		frontCam.x = cos(radians(yaw)) * cos(radians(pitch));
+		frontCam.y = sin(radians(pitch));
+		frontCam.z = sin(radians(yaw)) * cos(radians(pitch));
+
+		front = normalize(frontCam);
+		right = normalize(cross(front, worldUp));
+		up = normalize(cross(right, front));
+	}
+};
+
