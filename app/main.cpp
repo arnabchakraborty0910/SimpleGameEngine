@@ -5,7 +5,10 @@
 #include <cmath>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include "Camera.h"
+#include "engine/core/Window.h"
+#include "engine/core/Clock.h"
+#include "engine/Core/Input.h"
+#include "engine/Core/Application.h"
 
 //math classes
 #include <glm/glm.hpp>
@@ -13,18 +16,19 @@
 #include <glm/gtc/type_ptr.hpp>
 
 //other classes
-#include "Shader.h"
+#include "engine/renderer/Shader.h"
+#include "engine/renderer/Camera.h"
+
 
 using namespace glm;
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
 
 //Camera
 Camera cam(vec3(0.0f,0.0f,3.0f));
+Application app(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL");
 
-float deltaTime = 0.0f, lastFrame = 0.0f, currentFrame = 0.0f;
-float lastX = 400, lastY = 300;
-bool firstMouse = true;
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+
 
 float verticies[] = {
 	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
@@ -99,39 +103,14 @@ unsigned int indices[] = { // note that we start from 0!
 
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, float detlaTime);
 
 int main() {
-	//initailizing glfw
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	//creating window
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
+	if (!app.getWindow().getHandle())
 		return -1;
-	}
-	//current context if things run correctly
-	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	//initializing glad
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-
-	//size of window on openGL
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	glfwSetInputMode(app.getWindow().getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	//setting up VAO
 	unsigned int VAO;
@@ -208,22 +187,14 @@ int main() {
 
 	
 	stbi_image_free(data);
-	
-
-
-	
-	
-	
-
 
 	shader1.use();
 	shader1.setInt("texture1", 0);
 
 
 	//calls this when GLFW detects the size of the window changes
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetCursorPosCallback(app.getWindow().getHandle(), mouse_callback);
+	glfwSetScrollCallback(app.getWindow().getHandle(), scroll_callback);
 		
 	shader1.use(); // don’t forget to activate the shader first!
 	shader1.setInt("texture1", 0);
@@ -235,13 +206,9 @@ int main() {
 	//delta time
 
 	//game loop
-	while (!glfwWindowShouldClose(window)) 
+	app.run([&](float dt)
 	{
-		currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
-		processInput(window);
+		processInput(app.getWindow().getHandle(), dt);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -260,7 +227,7 @@ int main() {
 		for (int i = 0; i < 10; i++) {
 			mat4 model = mat4(1.0f);
 			model = translate(model, cubePos[i]);
-			float angle = 20.0f * i + (float)glfwGetTime() * 30.0f;
+			float angle = 20.0f * i + app.getClock().getTime() * 30.0f;
 			model = rotate(model, radians(angle), vec3(1.0f, 0.3f, 0.5f));
 			shader1.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -278,37 +245,16 @@ int main() {
 		//textures
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+	});
 
 
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-
-
-	glfwTerminate();
 	return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (firstMouse) {
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos;
-
-	lastX = xpos;
-	lastY = ypos;
-	
+	float xoffset, yoffset;
+	app.getInput().onMouseMove(xpos, ypos, xoffset, yoffset);
 	cam.ProcessMouseMovement(xoffset, yoffset, true);
 }
 
@@ -317,20 +263,19 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	cam.ProcessMouseScroll(yoffset);
 }
 
-void processInput(GLFWwindow* window)
-{
-	
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+void processInput(GLFWwindow* window, float deltaTime)
+{	
+	if (app.getInput().isKeyPressed(GLFW_KEY_ESCAPE))
 		glfwSetWindowShouldClose(window, true);
 
 	
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	if (app.getInput().isKeyPressed(GLFW_KEY_W))
 		cam.ProcessKeyBoard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	if (app.getInput().isKeyPressed(GLFW_KEY_S))
 		cam.ProcessKeyBoard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	if (app.getInput().isKeyPressed(GLFW_KEY_A))
 		cam.ProcessKeyBoard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	if (app.getInput().isKeyPressed(GLFW_KEY_D))
 		cam.ProcessKeyBoard(RIGHT, deltaTime);
 
 

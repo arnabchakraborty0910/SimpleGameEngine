@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)vendor\glfw\include;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\glm-master;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)vendor\glfw\include;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\glm-master;$(ProjectDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\glfw\lib-vc2026;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -128,13 +128,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="engine\Core\Application.cpp" />
+    <ClCompile Include="app\main.cpp" />
+    <ClCompile Include="engine\Core\Clock.cpp" />
+    <ClCompile Include="engine\renderer\Shader.cpp" />
+    <ClCompile Include="engine\Core\Input.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
+    <ClCompile Include="engine\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Shader.h" />
+    <ClInclude Include="engine\Core\Application.h" />
+    <ClInclude Include="engine\Core\Clock.h" />
+    <ClInclude Include="engine\renderer\Camera.h" />
+    <ClInclude Include="engine\renderer\Shader.h" />
+    <ClInclude Include="engine\Core\Window.h" />
+    <ClInclude Include="engine\Core\Input.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
