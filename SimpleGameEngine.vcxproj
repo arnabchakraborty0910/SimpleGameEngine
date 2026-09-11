@@ -133,16 +133,33 @@
     <ClCompile Include="engine\Core\Clock.cpp" />
     <ClCompile Include="engine\renderer\Shader.cpp" />
     <ClCompile Include="engine\Core\Input.cpp" />
+    <ClCompile Include="engine\renderer\Mesh.cpp" />
+    <ClCompile Include="engine\renderer\Texture.cpp" />
+    <ClCompile Include="engine\renderer\Renderer.cpp" />
+    <ClCompile Include="engine\physics\PhysicsWorld.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="engine\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\Core\Application.h" />
     <ClInclude Include="engine\Core\Clock.h" />
+    <ClInclude Include="engine\physics\RigidBody.h" />
     <ClInclude Include="engine\renderer\Camera.h" />
     <ClInclude Include="engine\renderer\Shader.h" />
     <ClInclude Include="engine\Core\Window.h" />
     <ClInclude Include="engine\Core\Input.h" />
+    <ClInclude Include="engine\renderer\Mesh.h" />
+    <ClInclude Include="engine\renderer\Texture.h" />
+    <ClInclude Include="engine\renderer\Renderer.h" />
+    <ClInclude Include="engine\scene\Entity.h" />
+    <ClInclude Include="engine\scene\Light.h" />
+    <ClInclude Include="engine\scene\Scene.h" />
+    <ClInclude Include="engine\scene\Transform.h" />
+    <ClInclude Include="engine\physics\PhysicsWorld.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\light.frag" />
+    <None Include="shaders\light.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
