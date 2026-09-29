@@ -1,5 +1,15 @@
 #pragma once
+
 #include "engine/scene/scene.h"
+
+/*
+* This does all the physics calculations on all the entities in the scene except for lighting. 
+* 
+* Types of calculations include:
+*	Gravity
+*	collision
+*	friction on ground and on other objects
+*/
 
 class PhysicsWorld
 {

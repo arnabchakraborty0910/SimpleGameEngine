@@ -1,5 +1,11 @@
 #pragma
+
 #include <glm/glm.hpp>
+
+/*
+* This is the editor. It use Imgui
+* Allows user to change color of light, textures of entity, speed of entity thrown, and entity color.
+*/
 
 class Scene;
 class Mesh;

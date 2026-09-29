@@ -1,8 +1,14 @@
 #pragma once
+
 #include "Clock.h"
 #include "Window.h"
 #include "Input.h"
 #include <functional>
+
+/*
+* This class holds the clock, input, and GLFW window. It also runs the main loop via run()
+* It makes sure that the window, input system, and clock are created, running properly, and exit without any errors.
+*/
 
 class Application
 {

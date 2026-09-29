@@ -5,6 +5,9 @@ class Scene;
 class Mesh;
 class Light;
 #include <glm/glm.hpp>
+/*
+* Draws the scene with light sources and entities(Cubes with diffrent textures)
+*/
 
 using namespace glm;
 class Renderer

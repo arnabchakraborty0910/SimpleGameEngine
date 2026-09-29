@@ -1,7 +1,13 @@
 #pragma once
+
 #include <vector>
 #include "Entity.h"
 #include "Light.h"
+
+/*
+* List of entities and a light source. Rederer draws these onto the scene. 
+* Physics takes this as well for physics calculations for each object
+*/
 
 class Scene {
 public:

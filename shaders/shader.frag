@@ -1,4 +1,8 @@
 #version 330 core
+/*
+* This is the fragment shader for all entities in the scene. All lighting, color, and texture caclultions 
+* All uniform variable are given in the code 
+*/
 
 out vec4 FragColor;
 
@@ -34,6 +38,7 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256);
 	vec3 specular = specularStrength * spec * lightColor;
 
+	//point-light attenuation
 	float K_c = 1.0f;
 	float K_l = 0.0f;
 	float K_q = 0.032;
