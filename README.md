@@ -50,6 +50,3 @@ On disk the core folder may appear as `engine/Core`. Windows treats that the sam
 
 Always include `glad/glad.h` before `GLFW/glfw3.h`.
 
-## Licenses
-
-Third-party licenses are in each library under `vendor/` (GLFW, GLM, Dear ImGui, and the others). This repo does not relicense those files.
