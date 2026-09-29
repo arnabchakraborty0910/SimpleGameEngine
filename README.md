@@ -24,7 +24,7 @@ Dependencies already live in `vendor/` (GLFW, GLAD, GLM, stb_image, Dear ImGui).
 | R | Throw a cube from the camera |
 | Escape | Quit |
 
-While the editor is open, mouse look is disabled so you can use ImGui. The engine ignores camera keys and look when ImGui wants the keyboard or mouse (`WantCaptureKeyboard` / `WantCaptureMouse`).
+
 
 ## Layout
 
@@ -40,13 +40,6 @@ textures/             Images loaded at runtime
 vendor/               Third-party libraries (do not edit)
 ```
 
-On disk the core folder may appear as `engine/Core`. Windows treats that the same as `engine/core`.
 
-## What still lives in main
 
-`app/main.cpp` constructs `Application`, the demo meshes, shaders, textures, `Scene`, `PhysicsWorld`, and `Editor`. It still wires GLFW callbacks, bootstraps ImGui, draws the floor, and orbits the light. The long-term shape is a thinner `main` that constructs those objects and calls `Application::run`.
-
-## Include order
-
-Always include `glad/glad.h` before `GLFW/glfw3.h`.
 
