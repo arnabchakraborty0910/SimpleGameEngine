@@ -1,17 +1,13 @@
 #pragma once
 
+
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum Camera_Movement {
-	FORWARD,
-	BACKWARD,
-	LEFT,
-	RIGHT
-};
-
+#include <engine/Core/Application.h>
 
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
@@ -56,16 +52,23 @@ public:
 		return lookAt(pos, pos + front, up);
 	}
 
-	void ProcessKeyBoard(Camera_Movement direction, float deltaTime) {
-		float velocity = moveSpeed * deltaTime;
-		if (direction == FORWARD)
-			pos += front * velocity;
-		if (direction == BACKWARD)
-			pos -= front * velocity;
-		if (direction == LEFT)
-			pos -= right * velocity;
-		if (direction == RIGHT)
-			pos += right * velocity;
+	void ProcessKeyBoard(Input& input, float deltaTime) {
+		vec3 dir(0.0f);
+		if (input.isKeyPressed(GLFW_KEY_W))
+			dir += vec3(front.x, 0.0f, front.z);
+		if (input.isKeyPressed(GLFW_KEY_S))
+			dir -= vec3(front.x, 0.0f, front.z);
+		if (input.isKeyPressed(GLFW_KEY_A))
+			dir -= vec3(right.x, 0.0f, right.z);
+		if (input.isKeyPressed(GLFW_KEY_D))
+			dir += vec3(right.x, 0.0f, right.z);
+		if (input.isKeyPressed(GLFW_KEY_SPACE))
+			dir += worldUp;
+		if (input.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
+			dir -= worldUp;
+
+		if(length(dir) > 1e-6f)
+		pos += normalize(dir) * moveSpeed * deltaTime;
 	}
 
 	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch) {

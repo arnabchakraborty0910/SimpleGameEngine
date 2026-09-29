@@ -13,7 +13,7 @@ public:
 	Renderer();
 	void beginFrame();
 	void setCamera(Shader& shader, Camera& cam, float aspect);
-	void draw(Scene& scene, Shader& shader, Mesh& mesh);
+	void draw(Scene& scene, Shader& shader);
 	void drawLamp(Shader& shader, Mesh& mesh, Light& light);
 };
 

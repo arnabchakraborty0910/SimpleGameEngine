@@ -2,10 +2,12 @@
 
 #include <glad/glad.h>
 
+enum class Primitive { Cube, Plane };
+
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(Primitive type = Primitive::Cube);
 	void draw() const;
 
 private:

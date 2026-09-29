@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "engine/scene/Scene.h"
 #include "engine/scene/Light.h"
+#include "Texture.h"
 
 //math classes
 #include <glm/glm.hpp>
@@ -32,19 +33,32 @@ void Renderer::setCamera(Shader& shader, Camera& cam, float aspect)
 
 }
 
-void Renderer::draw(Scene& scene, Shader& shader, Mesh& mesh) {
+void Renderer::draw(Scene& scene, Shader& shader) {
 	int i = 0;
+	shader.use();
 	for (Entity& e : scene.entities) {
+		if (!e.mesh)
+			continue;
 		mat4 model = mat4(1.0f);
 		model = translate(model, e.transform.position);
 		shader.setMat4("model", model);
-		mesh.draw();
+
+		shader.setVec3("objectColor", e.color);
+		if (e.texture) {
+			e.texture->bind(0);
+			e.texture->bind(1);
+		}
+
+		e.mesh->draw();
 		i++;
+
+		
 	}
 }
 
 void Renderer::drawLamp(Shader& shader, Mesh& mesh, Light& light)
 {
+	shader.use();
 	shader.setVec3("lightPos", light.position);
 	shader.setVec3("lightColor", light.color);
 
